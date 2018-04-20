@@ -1,0 +1,38 @@
+function [H0rows,H0cols,H1rows,H1cols] = SignalDetection( Energy, M, chosenRow)
+%Generates a grid of plots for signals under h0, h1
+
+H0rows = zeros(10,M);
+H0cols = zeros(10,M);
+H1rows = zeros(10,M);
+H1cols = zeros(10,M);
+
+for trials = 1:10
+S = zeros(M);
+ 
+    for i = 1:M
+    S(i,i) = Energy;
+    end
+N = randn(M, M); % generate random gaussian noise
+X0 = N;
+X1 = S + N;
+
+for val = 1:M
+    %generate data with no signal 
+    H0rows(trials,val) = exp(X0(chosenRow,:)*S(val,:)' - 0.5*Energy)*(1/M);
+    H0cols(trials,val) = exp(X0(chosenRow,:)*S(:,val) - 0.5*Energy)*(1/M);
+    %generate data with signal
+    H1rows(trials,val) = exp(X1(chosenRow,:)*S(val,:)' - 0.5*Energy)*(1/M); 
+    H1cols(trials,val) = exp(X1(chosenRow,:)*S(:,val) - 0.5*Energy)*(1/M);
+end
+
+for n = 1:M
+    H0rows(trials,:) = H0rows(trials,:)./sum(H0rows(trials,:));
+    H1rows(trials,:) = H1rows(trials,:)./sum(H1rows(trials,:));
+    H0cols(trials,:) = H0cols(trials,:)./sum(H0cols(trials,:));
+    H1cols(trials,:) = H1cols(trials,:)./sum(H1cols(trials,:));
+end
+end
+
+
+end
+
